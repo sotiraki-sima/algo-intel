@@ -12,8 +12,8 @@ style.use('ggplot')
 start = dt.datetime.now() - timedelta(days=2*365) #dt.datetime(20.019, 1, 1, 1)
 end = dt.datetime.now()
 
-df = web.DataReader("TLSA", 'yahoo', start, end)
-#print(df.head(10))
+df = web.DataReader("PFE", 'yahoo', start, end)
+print(df.head(10))
 
 
 
@@ -27,11 +27,15 @@ short_on_negatives = [0.0,0.0]
 long_on_positives = [0.0,0.0]
 short_on_positives = [0.0,0.0]
 
+long_wins = 0.0
+short_wins = 0.0
+
 for i in range(1,len(df['Close'])):
     position = "NONE"
 
     if (df['Close'][i] - df['Open'][i]) > 0.0:
         position = "LONG"
+        long_wins += float(df['Close'][i] - df['Open'][i])
         if float(df['Open'][i] - df['Close'][i-1]) < 0.0:
             long_on_negatives[0] += 1
         elif float(df['Open'][i] - df['Close'][i-1]) > 0.0:
@@ -39,6 +43,7 @@ for i in range(1,len(df['Close'])):
 
     elif (df['Close'][i] - df['Open'][i]) < 0.0:
         position = "SHORT"
+        short_wins += -1*float(df['Close'][i] - df['Open'][i])
         if float(df['Open'][i] - df['Close'][i-1]) < 0.0:
             short_on_negatives[0] += 1
         elif float(df['Open'][i] - df['Close'][i-1]) > 0.0:
@@ -53,10 +58,10 @@ for i in range(1,len(df['Close'])):
         position +
         "\n")
 
-print("long_on_negatives " + str(long_on_negatives[0]/(len(df['Close']))*100))
-print("long_on_positives " + str(long_on_positives[0]/(len(df['Close']))*100))
-print("short_on_negatives " + str(short_on_negatives[0]/(len(df['Close']))*100))
-print("short_on_positives " + str(short_on_positives[0]/(len(df['Close']))*100))
+print("long_on_negatives " + str(long_on_negatives[0]/(len(df['Close']))*100) + ", total: " + str(long_wins))
+print("long_on_positives " + str(long_on_positives[0]/(len(df['Close']))*100)+ ", total: " + str(long_wins))
+print("short_on_negatives " + str(short_on_negatives[0]/(len(df['Close']))*100) + ", total: " + str(short_wins))
+print("short_on_positives " + str(short_on_positives[0]/(len(df['Close']))*100) + ", total: " + str(short_wins))
 
 output1.close()
 
