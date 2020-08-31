@@ -15,9 +15,9 @@ end = dt.datetime.now()
 #df = web.DataReader("AMZN", 'yahoo', start, end)
 
 #df = web.DataReader("AAPL", 'yahoo', start, end)
-df = web.DataReader("PFE", 'yahoo', start, end)
+#df = web.DataReader("PFE", 'yahoo', start, end)
 #df = web.DataReader("GOOG", 'yahoo', start, end)
-#df = web.DataReader("TLSA", 'yahoo', start, end)
+df = web.DataReader("TLSA", 'yahoo', start, end)
 #df = web.DataReader("JPM", 'yahoo', start, end)
 #df = web.DataReader("ZM", 'yahoo', start, end)
 
@@ -67,10 +67,16 @@ for i in range(1,len(df['Close'])):
         position +
         "\n")
 
-print("long_on_negatives " + str(long_on_negatives[0]/(len(df['Close']))*100) + ", total: " + str(long_wins))
-print("long_on_positives " + str(long_on_positives[0]/(len(df['Close']))*100)+ ", total: " + str(long_wins))
-print("short_on_negatives " + str(short_on_negatives[0]/(len(df['Close']))*100) + ", total: " + str(short_wins))
-print("short_on_positives " + str(short_on_positives[0]/(len(df['Close']))*100) + ", total: " + str(short_wins))
+print("")
+print("On Negative goes Long:\t" + str(long_on_negatives[0]/(len(df['Close']))*100) + "\t total: " + str(long_wins) + "\t real total: " + str(long_wins*long_on_negatives[0]/(len(df['Close']))))
+print("On Negative goes Short:\t" + str(short_on_negatives[0]/(len(df['Close']))*100) + "\t total: " + str(short_wins) + "\t real total: " + str(short_wins*short_on_negatives[0]/(len(df['Close']))))
+print("Long vs Short:\t " + str(long_wins*long_on_negatives[0]/(len(df['Close'])) - short_wins*short_on_negatives[0]/(len(df['Close']))))
+print("")
+print("On Positive goes Long:\t" + str(long_on_positives[0]/(len(df['Close']))*100)+ "\t total: " + str(long_wins) + "\t real total: " + str(long_wins*long_on_positives[0]/(len(df['Close']))))
+print("On Positive goes Short:\t" + str(short_on_positives[0]/(len(df['Close']))*100) + "\t total: " + str(short_wins) + "\t real total: " + str(short_wins*short_on_positives[0]/(len(df['Close']))))
+print("Long vs Short:\t " + str(long_wins*long_on_positives[0]/(len(df['Close'])) - short_wins*short_on_positives[0]/(len(df['Close']))))
+print("")
+
 print("No big changes: " + str(
             float(100 - 
                 long_on_negatives[0]/(len(df['Close']))*100 - 
