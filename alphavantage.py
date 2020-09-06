@@ -16,7 +16,7 @@ MAX_EXTRACT = 60
 
 url = "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=GBP&to_symbol=EUR&outputsize=full&apikey=" + os.getenv("alpha_key")
 
-url = "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=GBP&to_symbol=EUR&apikey=" + os.getenv("alpha_key")
+#url = "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=GBP&to_symbol=EUR&apikey=" + os.getenv("alpha_key")
 print(url)
 response = requests.get(url)
 response_json = response.json()
@@ -28,24 +28,36 @@ for key in response_json:
         break
 
 output2 = open("output2.csv", "w")
-output2.write("      DATE     ____-5     ____-4     ____-3     ____-2     ____-1     ____-0     POSITI     ____+1\n")
+output2.write("      DATE     ____-5     ____-4     ____-3     ____-2     ____-1     ____-0     POSITI     ____+1     ____DIF\n")
 
 for i in range(5,-1,-1):
     print(i)
 
 trade_days = keys_to_array(response_json[data_key])
 
-for x in range (1 ,len(trade_days)-ML_BACK_TRACK):
+for x in range (1 ,len(trade_days)-ML_BACK_TRACK-1):
     output2.write(str(trade_days[x]))
 
     for i in range(ML_BACK_TRACK, -1, -1):
-        output2.write("     " + str(response_json[data_key][trade_days[x+i]]["4. close"]))
+        next_day_price = float(response_json[data_key][trade_days[x+i]]["4. close"])
+        today_price = float(response_json[data_key][trade_days[x+i+1]]["4. close"])
+        difference_of_next_day = round(next_day_price-today_price,4)
+        output2.write("     " + str(difference_of_next_day))
 
     next_day_price = float(response_json[data_key][trade_days[x-1]]["4. close"])
     today_price = float(response_json[data_key][trade_days[x]]["4. close"])
+    difference_of_next_day = round(next_day_price-today_price,4)
     
-    output2.write("     " + str("XXXXXX"))
+    
+    if(difference_of_next_day>0.001):
+        output2.write("     " + str("   BUY"))
+    elif difference_of_next_day<-0.001:
+        output2.write("     " + str("  SELL"))
+    else:
+        output2.write("     " + str("NOTRAD"))
+
     output2.write("     " + str(response_json[data_key][trade_days[x-1]]["4. close"]))
+    output2.write("     " + str(difference_of_next_day))
     output2.write("\n")
     '''
     output2.write(
