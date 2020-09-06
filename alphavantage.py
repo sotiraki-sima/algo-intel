@@ -14,6 +14,8 @@ def keys_to_array(json_obj):
 ML_BACK_TRACK = 5
 MAX_EXTRACT = 60
 
+url = "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=GBP&to_symbol=EUR&outputsize=full&apikey=" + os.getenv("alpha_key")
+
 url = "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=GBP&to_symbol=EUR&apikey=" + os.getenv("alpha_key")
 print(url)
 response = requests.get(url)
@@ -39,6 +41,11 @@ for x in range (1 ,len(trade_days)-ML_BACK_TRACK):
     for i in range(ML_BACK_TRACK, -1, -1):
         output2.write("     " + str(response_json[data_key][trade_days[x+i]]["4. close"]))
 
+    next_day_price = float(response_json[data_key][trade_days[x-1]]["4. close"])
+    today_price = float(response_json[data_key][trade_days[x]]["4. close"])
+    
+    output2.write("     " + str("XXXXXX"))
+    output2.write("     " + str(response_json[data_key][trade_days[x-1]]["4. close"]))
     output2.write("\n")
     '''
     output2.write(
